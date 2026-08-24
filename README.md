@@ -17,7 +17,7 @@ Como rodar
     2. No primeiro terminal, inicie o servidor: python S3.py
     3. No segundo terminal, inicie o cliente: python C2.py
 
-    Comandos disponíveis (digitados no cliente)              Comando	O que faz
+    Comandos disponíveis (digitados no cliente)              O que faz
     --------------------------------------------------------------------------------------------------------
         CPU-n	                                             Mostra uso de CPU a cada n segundos
         MEMORIA-n	                                         Mostra uso de memória a cada n segundos
