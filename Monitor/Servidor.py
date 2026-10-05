@@ -86,11 +86,17 @@ def handle_client(conn, addr, limite):
             elif comando.startswith("CPU-") or comando.startswith("MEMORIA-") or comando.startswith("DISCO-"):
                 tipo, seg = comando.split("-", 1)
 
-                if not seg.isdigit():
-                    conn.sendall(f"erro: '{seg}' nao e um numero valido. use por exemplo CPU-3\n".encode())
+                # fase 3: valida o intervalo antes de criar a thread
+                # (sem isso, CPU-0 inundava o cliente e CPU-99999999999 dava erro no servidor)
+                try:
+                    n = int(seg)
+                except ValueError:
+                    n = 0  # nao e numero -> cai no erro abaixo
+                if not 1 <= n <= 3600:
+                    conn.sendall(f"erro: '{seg}' invalido. use um numero de 1 a 3600, ex: CPU-3\n".encode())
                     continue
 
-                t = threading.Thread(target=monitor, args=(conn, tipo, int(seg), parar), daemon=True)
+                t = threading.Thread(target=monitor, args=(conn, tipo, n, parar), daemon=True)
                 t.start()
 
     except OSError:
@@ -109,7 +115,7 @@ def handle_client(conn, addr, limite):
 
 def main():
     if len(sys.argv) != 2 or not sys.argv[1].isdigit():
-        print("Uso: python server_fase3.py <limite_de_clientes>")
+        print("Uso: python Servidor.py <limite_de_clientes>")
         sys.exit(1)
     limite = int(sys.argv[1])
 
